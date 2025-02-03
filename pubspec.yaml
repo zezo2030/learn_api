@@ -1,0 +1,34 @@
+name: learn_api
+description: "A new Flutter project."
+publish_to: "none"
+version: 0.1.0
+
+environment:
+  sdk: ^3.6.0
+
+dependencies:
+  dio: ^5.8.0+1
+  flutter:
+    sdk: flutter
+  flutter_bloc: ^9.0.0
+  image_picker: ^1.1.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+
+  # To add assets to your application, add an assets section, like this:
+  assets:
+    - assets/images/
+
+  # To add custom fonts
+  fonts:
+    - family: NotoSerif
+      fonts:
+        - asset: assets/fonts/NotoSerif-Regular.ttf
+        - asset: assets/fonts/NotoSerif-Bold.ttf
+          weight: 700
