@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:learn_api/core/api/api_consumer.dart';
+import 'package:learn_api/core/api/end_point.dart';
+import 'package:learn_api/core/errors/exceptions.dart';
 import 'package:learn_api/cubit/user_state.dart';
 
 class UserCubit extends Cubit<UserState> {
@@ -29,5 +31,19 @@ class UserCubit extends Cubit<UserState> {
   TextEditingController confirmPassword = TextEditingController();
 
   //Sign in
-  signIn() async {}
+  signIn() async {
+    try {
+      emit(UserLoading());
+      final response = await api.post(
+        EndPoint.signIn,
+        data: {
+          ApiKey.email: signInEmail.text,
+          ApiKey.password: signInPassword.text,
+        },
+      );
+      emit(UserSuccess());
+    } on ServerException catch (e) {
+      emit(UserFailure(errorMessage: e.errModel.errorMessage));
+    }
+  }
 }

@@ -1,3 +1,5 @@
+import 'package:learn_api/core/api/end_point.dart';
+
 class ErrorModel {
   final int status;
   final String errorMessage;
@@ -6,8 +8,8 @@ class ErrorModel {
 
   factory ErrorModel.fromJson(Map<String, dynamic> json) {
     return ErrorModel(
-      status: json['status'],
-      errorMessage: json['errorMessage'],
+      status: json[ApiKey.status],
+      errorMessage: json[ApiKey.errorMessage],
     );
   }
 }

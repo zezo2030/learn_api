@@ -1,13 +1,14 @@
 import 'package:dio/dio.dart';
 import 'package:learn_api/core/api/api_consumer.dart';
 import 'package:learn_api/core/api/api_interceptors.dart';
+import 'package:learn_api/core/api/end_point.dart';
 import 'package:learn_api/core/errors/exceptions.dart';
 
 class DioConsumer extends ApiConsumer {
   final Dio dio;
 
   DioConsumer({required this.dio}) {
-    dio.options.baseUrl = 'https://food-api-omega.vercel.app/api/v1/';
+    dio.options.baseUrl = EndPoint.baseUrl;
     dio.interceptors.add(ApiInterceptors());
     dio.interceptors.add(LogInterceptor(
       request: true,
@@ -32,9 +33,8 @@ class DioConsumer extends ApiConsumer {
         queryParameters: queryParameters,
       );
       return respons.data;
-      print(respons.data);
     } on DioException catch (e) {
-      handeleDioExceptions(e);
+      handleDioExceptions(e);
     }
   }
 
@@ -48,37 +48,41 @@ class DioConsumer extends ApiConsumer {
       );
       return respons.data;
     } on DioException catch (e) {
-      handeleDioExceptions(e);
+      handleDioExceptions(e);
     }
   }
 
   @override
   Future patch(String path,
-      {data, Map<String, dynamic>? queryParameters}) async {
+      {data,
+      Map<String, dynamic>? queryParameters,
+      bool isFormData = false}) async {
     try {
       final respons = await dio.patch(
         path,
-        data: data,
+        data: isFormData ? FormData.fromMap(data) : data,
         queryParameters: queryParameters,
       );
       return respons.data;
     } on DioException catch (e) {
-      handeleDioExceptions(e);
+      handleDioExceptions(e);
     }
   }
 
   @override
   Future post(String path,
-      {data, Map<String, dynamic>? queryParameters}) async {
+      {data,
+      Map<String, dynamic>? queryParameters,
+      bool isFormData = false}) async {
     try {
       final respons = await dio.post(
         path,
-        data: data,
+        data: isFormData ? FormData.fromMap(data) : data,
         queryParameters: queryParameters,
       );
       return respons.data;
     } on DioException catch (e) {
-      handeleDioExceptions(e);
+      handleDioExceptions(e);
     }
   }
 }
