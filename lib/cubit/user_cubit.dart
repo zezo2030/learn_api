@@ -6,6 +6,7 @@ import 'package:learn_api/cache/cash_helper.dart';
 import 'package:learn_api/core/api/api_consumer.dart';
 import 'package:learn_api/core/api/end_point.dart';
 import 'package:learn_api/core/errors/exceptions.dart';
+import 'package:learn_api/core/functions/upload_image_api.dart';
 import 'package:learn_api/cubit/user_state.dart';
 import 'package:learn_api/models/sign_in_model.dart';
 
@@ -46,7 +47,14 @@ class UserCubit extends Cubit<UserState> {
     api.post(
       EndPoint.signUp,
       isFormData: true,
-      data: {},
+      data: {
+        ApiKey.name: signUpName.text,
+        ApiKey.phone: signUpPhoneNumber.text,
+        ApiKey.email: signUpEmail.text,
+        ApiKey.password: signUpPassword.text,
+        ApiKey.confirmPassword: confirmPassword.text,
+        ApiKey.profilePic: await uploadImage(profilePic!),
+      },
     );
   }
 
