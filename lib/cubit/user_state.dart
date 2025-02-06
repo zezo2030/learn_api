@@ -6,6 +6,8 @@ final class UserLoading extends UserState {}
 
 final class UserSuccess extends UserState {}
 
+final class UploadProfilePic extends UserState {}
+
 final class UserFailure extends UserState {
   final String errorMessage;
 

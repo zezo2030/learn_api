@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:learn_api/cache/cash_helper.dart';
 import 'package:learn_api/core/api/api_consumer.dart';
 import 'package:learn_api/core/api/end_point.dart';
 import 'package:learn_api/core/errors/exceptions.dart';
 import 'package:learn_api/cubit/user_state.dart';
+import 'package:learn_api/models/sign_in_model.dart';
 
 class UserCubit extends Cubit<UserState> {
   UserCubit(this.api) : super(UserInitial());
@@ -29,6 +32,23 @@ class UserCubit extends Cubit<UserState> {
   TextEditingController signUpPassword = TextEditingController();
   //Sign up confirm password
   TextEditingController confirmPassword = TextEditingController();
+  //Sign in model
+  SignInModel? user;
+
+  // upload profile pic
+  uploadProfilePic(XFile image) {
+    profilePic = image;
+    emit(UploadProfilePic());
+  }
+
+  // sign up
+  signUp() async {
+    api.post(
+      EndPoint.signUp,
+      isFormData: true,
+      data: {},
+    );
+  }
 
   //Sign in
   signIn() async {
@@ -41,6 +61,10 @@ class UserCubit extends Cubit<UserState> {
           ApiKey.password: signInPassword.text,
         },
       );
+      user = SignInModel.fromJson(response);
+      final decodedToken = JwtDecoder.decode(user!.token);
+      CashHelper().saveData(key: ApiKey.token, value: user!.token);
+      CashHelper().saveData(key: ApiKey.id, value: decodedToken[ApiKey.id]);
       emit(UserSuccess());
     } on ServerException catch (e) {
       emit(UserFailure(errorMessage: e.errModel.errorMessage));
