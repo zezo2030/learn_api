@@ -2,8 +2,12 @@ class EndPoint {
   static const String baseUrl = 'https://food-api-omega.vercel.app/api/v1/';
   static const String signIn = 'user/signin';
   static const String signUp = 'user/signup';
-  static const String getProfile = 'user/get-profile';
-  static const String updateProfile = 'user/update-profile';
+  // static const String getProfile = 'user/get-profile';
+  // static const String updateProfile = 'user/update-profile';
+
+  static String getUserDataEndPoint(String id) {
+    return 'user/get-user/$id';
+  }
 }
 
 class ApiKey {

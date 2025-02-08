@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learn_api/cubit/user_cubit.dart';
 import 'package:learn_api/cubit/user_state.dart';
+import 'package:learn_api/screens/profile_screen.dart';
 import 'package:learn_api/widgets/custom_form_button.dart';
 import 'package:learn_api/widgets/custom_input_field.dart';
 import 'package:learn_api/widgets/dont_have_an_account.dart';
@@ -22,6 +23,13 @@ class SignInScreen extends StatelessWidget {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
                 content: Text('Sign In Success'),
+              ),
+            );
+            context.read<UserCubit>().getUserProfile();
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const ProfileScreen(),
               ),
             );
           } else if (state is SignInFailure) {
@@ -79,12 +87,6 @@ class SignInScreen extends StatelessWidget {
                                     innerText: 'Sign In',
                                     onPressed: () {
                                       context.read<UserCubit>().signIn();
-                                      // Navigator.push(
-                                      //   context,
-                                      //   MaterialPageRoute(
-                                      //     builder: (context) => const ProfileScreen(),
-                                      //   ),
-                                      // );
                                     },
                                   ),
                             const SizedBox(height: 18),

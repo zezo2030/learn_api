@@ -10,6 +10,7 @@ import 'package:learn_api/core/functions/upload_image_api.dart';
 import 'package:learn_api/cubit/user_state.dart';
 import 'package:learn_api/models/sign_in_model.dart';
 import 'package:learn_api/models/sign_up_model.dart';
+import 'package:learn_api/models/user_model.dart';
 
 class UserCubit extends Cubit<UserState> {
   UserCubit(this.api) : super(UserInitial());
@@ -86,6 +87,20 @@ class UserCubit extends Cubit<UserState> {
       emit(SigninSuccess());
     } on ServerException catch (e) {
       emit(SignInFailure(errorMessage: e.errModel.errorMessage));
+    }
+  }
+
+  getUserProfile() async {
+    try {
+      emit(GetUserLoading());
+      final response = await api.get(
+        EndPoint.getUserDataEndPoint(
+          CashHelper().getData(key: ApiKey.id),
+        ),
+      );
+      emit(GetUserSuccess(user: UserModel.fromJson(response)));
+    } on ServerException catch (e) {
+      emit(GetUserFailure(errorMessage: e.errModel.errorMessage));
     }
   }
 }
