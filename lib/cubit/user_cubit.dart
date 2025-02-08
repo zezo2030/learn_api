@@ -9,6 +9,7 @@ import 'package:learn_api/core/errors/exceptions.dart';
 import 'package:learn_api/core/functions/upload_image_api.dart';
 import 'package:learn_api/cubit/user_state.dart';
 import 'package:learn_api/models/sign_in_model.dart';
+import 'package:learn_api/models/sign_up_model.dart';
 
 class UserCubit extends Cubit<UserState> {
   UserCubit(this.api) : super(UserInitial());
@@ -44,24 +45,33 @@ class UserCubit extends Cubit<UserState> {
 
   // sign up
   signUp() async {
-    api.post(
-      EndPoint.signUp,
-      isFormData: true,
-      data: {
-        ApiKey.name: signUpName.text,
-        ApiKey.phone: signUpPhoneNumber.text,
-        ApiKey.email: signUpEmail.text,
-        ApiKey.password: signUpPassword.text,
-        ApiKey.confirmPassword: confirmPassword.text,
-        ApiKey.profilePic: await uploadImage(profilePic!),
-      },
-    );
+    try {
+      emit(SignUpLoading());
+      final response = await api.post(
+        EndPoint.signUp,
+        isFormData: true,
+        data: {
+          ApiKey.name: signUpName.text,
+          ApiKey.phone: signUpPhoneNumber.text,
+          ApiKey.email: signUpEmail.text,
+          ApiKey.password: signUpPassword.text,
+          ApiKey.confirmPassword: confirmPassword.text,
+          ApiKey.profilePic: await uploadImage(profilePic!),
+          ApiKey.location:
+              '{"name":"methalfa","address":"meet halfa","coordinates":[30.1572709,31.224779]}',
+        },
+      );
+      final signUpmodel = SignUpModel.fromJson(response);
+      emit(SignUpSuccess(message: signUpmodel.message));
+    } on ServerException catch (e) {
+      emit(SignUpFailure(errorMessage: e.errModel.errorMessage));
+    }
   }
 
   //Sign in
   signIn() async {
     try {
-      emit(UserLoading());
+      emit(SignInLoading());
       final response = await api.post(
         EndPoint.signIn,
         data: {
@@ -73,9 +83,9 @@ class UserCubit extends Cubit<UserState> {
       final decodedToken = JwtDecoder.decode(user!.token);
       CashHelper().saveData(key: ApiKey.token, value: user!.token);
       CashHelper().saveData(key: ApiKey.id, value: decodedToken[ApiKey.id]);
-      emit(UserSuccess());
+      emit(SigninSuccess());
     } on ServerException catch (e) {
-      emit(UserFailure(errorMessage: e.errModel.errorMessage));
+      emit(SignInFailure(errorMessage: e.errModel.errorMessage));
     }
   }
 }

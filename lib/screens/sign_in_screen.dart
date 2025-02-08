@@ -18,13 +18,13 @@ class SignInScreen extends StatelessWidget {
     return SafeArea(
       child: BlocConsumer<UserCubit, UserState>(
         listener: (context, state) {
-          if (state is UserSuccess) {
+          if (state is SigninSuccess) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
                 content: Text('Sign In Success'),
               ),
             );
-          } else if (state is UserFailure) {
+          } else if (state is SignInFailure) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(state.errorMessage),
@@ -73,7 +73,7 @@ class SignInScreen extends StatelessWidget {
                             ForgetPasswordWidget(size: size),
                             const SizedBox(height: 20),
                             //!Sign In Button
-                            state is UserLoading
+                            state is SignInLoading
                                 ? CircularProgressIndicator()
                                 : CustomFormButton(
                                     innerText: 'Sign In',
